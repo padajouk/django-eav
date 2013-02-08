@@ -397,6 +397,13 @@ class Value(models.Model):
         return u"%s - %s: \"%s\"" % (self.entity, self.attribute.name,
                                      self.value)
 
+    def get_actual_value(self):
+        '''
+        Returns the value actually in the database, for use in forms.
+        '''
+        return getattr(self.value, "pk",
+                       getattr(self.value, "value", self.value))
+
 
 class Entity(object):
     '''
