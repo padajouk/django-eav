@@ -521,11 +521,14 @@ class Entity(object):
         '''
         return self.get_all_attributes().get(slug=slug)
 
-    def get_value_by_attribute(self, attribute):
+    def get_value_by_attribute(self, attribute, default=None):
         '''
         Returns a single :class:`Value` for *attribute*
         '''
-        return self.get_values().get(attribute=attribute)
+        try:
+            return self.get_values().get(attribute=attribute)
+        except Value.DoesNotExist:
+            return default
 
     def __iter__(self):
         '''
