@@ -452,14 +452,14 @@ class Entity(object):
 
     def _hasattr(self, attribute_slug):
         '''
-        Since we override __getattr__ with a backdown to the database, this exists as a way of 
+        Since we override __getattr__ with a backdown to the database, this exists as a way of
         checking whether a user has set a real attribute on ourselves, without going to the db if not
         '''
         return attribute_slug in self.__dict__
 
     def _getattr(self, attribute_slug):
         '''
-        Since we override __getattr__ with a backdown to the database, this exists as a way of 
+        Since we override __getattr__ with a backdown to the database, this exists as a way of
         getting the value a user set for one of our attributes, without going to the db to check
         '''
         return self.__dict__[attribute_slug]
@@ -488,7 +488,7 @@ class Entity(object):
                 value = self._getattr(attribute.slug)
             else:
                 value = values_dict.get(attribute.slug, None)
-            
+
             if value is None:
                 if attribute.required:
                     raise ValidationError(_(u"%(attr)s EAV field cannot " \
@@ -501,13 +501,19 @@ class Entity(object):
                     raise ValidationError(_(u"%(attr)s EAV field %(err)s") % \
                                               {'attr': attribute.slug,
                                                'err': e})
-                
-    def get_values_dict(self):
-        values_dict = dict()
-        for value in self.get_values():
-            values_dict[value.attribute.slug] = value.value
 
+    def get_values_dict(self):
+        '''
+        Returns a dict of all values in the entity, using slugs for keys.
+        '''
+        values_dict = {}
+        for attr in self.get_all_attributes():
+            value = self.get_value_by_attribute(attr)
+            if value is not None:
+                value = value.get_actual_value()
+            values_dict[attr.slug] = value
         return values_dict
+
 
     def get_values(self):
         '''
@@ -576,3 +582,16 @@ if 'django_nose' in settings.INSTALLED_APPS:
     Please, someone tell me a better way to do this.
     '''
     from .tests.models import Patient, Encounter
+
+
+
+
+def eav_get_values_dict(entity):
+    dict = {}
+    for attr in entity.get_all_attributes():
+        value = entity.get_value_by_attribute(attr)
+        if value is not None:
+            value = value.get_actual_value()
+        dict[attr.slug] = value
+    return dict
+Entity.get_values_dict = eav_get_values_dict
