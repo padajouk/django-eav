@@ -582,16 +582,3 @@ if 'django_nose' in settings.INSTALLED_APPS:
     Please, someone tell me a better way to do this.
     '''
     from .tests.models import Patient, Encounter
-
-
-
-
-def eav_get_values_dict(entity):
-    dict = {}
-    for attr in entity.get_all_attributes():
-        value = entity.get_value_by_attribute(attr)
-        if value is not None:
-            value = value.get_actual_value()
-        dict[attr.slug] = value
-    return dict
-Entity.get_values_dict = eav_get_values_dict
