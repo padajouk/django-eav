@@ -102,9 +102,15 @@ def expand_eav_filter(model_cls, key, value):
         gr_name = config_cls.generic_relation_attr
         datatype = Attribute.objects.get(slug=slug).datatype
 
-        lookup = '__%s' % fields[2] if len(fields) > 2 else ''
-        kwargs = {'value_%s%s' % (datatype, lookup): value,
-                  'attribute__slug': slug}
+        if datatype == Attribute.TYPE_OBJECT:
+            query_key = 'generic_value_id'
+        else:
+            lookup = '__%s' % fields[2] if len(fields) > 2 else ''
+            query_key = 'value_%s%s' % (datatype, lookup)
+        kwargs = {
+            query_key: value,
+            'attribute__slug': slug
+        }
         value = Value.objects.filter(**kwargs)
 
         return '%s__in' % gr_name, value

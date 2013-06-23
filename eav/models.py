@@ -261,7 +261,7 @@ class Attribute(models.Model):
         '''
         if self.datatype == self.TYPE_ENUM and not self.enum_group:
             raise ValidationError(_(
-                u"You must set the choice group for multiple choice" \
+                u"You must set the choice group for multiple choice " \
                 u"attributes"))
 
         if self.datatype != self.TYPE_ENUM and self.enum_group:
