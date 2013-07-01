@@ -204,6 +204,8 @@ class Attribute(models.Model):
 
     required = models.BooleanField(_(u"required"), default=False)
 
+    order = models.FloatField(_(u"order"), default=0.0, blank=True)
+
     objects = models.Manager()
     on_site = CurrentSiteManager()
 
@@ -312,6 +314,10 @@ class Attribute(models.Model):
 
     def __unicode__(self):
         return u"%s (%s)" % (self.name, self.get_datatype_display())
+
+    class Meta:
+        ordering = ['order', 'name']
+
 
 
 class Value(models.Model):
