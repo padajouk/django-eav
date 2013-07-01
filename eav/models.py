@@ -151,7 +151,7 @@ class Attribute(models.Model):
     '''
 
     class Meta:
-        ordering = ['name']
+        ordering = ['order', 'name']
         unique_together = ('site', 'slug')
 
     TYPE_TEXT = 'text'
@@ -314,10 +314,6 @@ class Attribute(models.Model):
 
     def __unicode__(self):
         return u"%s (%s)" % (self.name, self.get_datatype_display())
-
-    class Meta:
-        ordering = ['order', 'name']
-
 
 
 class Value(models.Model):
